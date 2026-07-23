@@ -1,0 +1,56 @@
+const CAP_TABLE_DATA = [
+  { name: 'Promoters',               ord: 13441, classA: 0,    ccps: 0,    ccd: 0   },
+  { name: 'ESOP',                    ord: 1403,  classA: 0,    ccps: 0,    ccd: 0   },
+  { name: 'Other Early Investors',   ord: 6274,  classA: 262,  ccps: 392,  ccd: 0   },
+  { name: 'MA Group',                ord: 93,    classA: 1811, ccps: 1246, ccd: 0   },
+  { name: '1Crowd Fund',             ord: 0,     classA: 1998, ccps: 307,  ccd: 0   },
+  { name: '1Crowd Angels',           ord: 0,     classA: 2204, ccps: 1190, ccd: 0   },
+  { name: 'Zeva CCD',                ord: 0,     classA: 0,    ccps: 0,    ccd: 666 },
+  { name: 'OIP Group',               ord: 0,     classA: 974,  ccps: 0,    ccd: 0   },
+  { name: 'Jito Group',              ord: 0,     classA: 540,  ccps: 6,    ccd: 0   },
+  { name: 'Desai Brothers Ltd',      ord: 0,     classA: 1356, ccps: 447,  ccd: 0   },
+  { name: 'Other Investors Group I', ord: 0,     classA: 1215, ccps: 154,  ccd: 0   },
+  { name: 'Other Investors Group II',ord: 11,    classA: 2161, ccps: 6139, ccd: 0   },
+  { name: 'Deepak Agarwal (Bikaji)', ord: 0,     classA: 0,    ccps: 4261, ccd: 0   },
+  { name: 'Prajwal',                 ord: 0,     classA: 0,    ccps: 2630, ccd: 0   },
+  { name: 'ABC Investor',            ord: 0,     classA: 0,    ccps: 0,    ccd: 0,  isNew: true },
+];
+
+const IH_GROUPS = [
+  { label: 'Nibhrant Shah & Family', color: '#3ABCA2', data: [0.4, 0.2, 0, 0, 0, 0, 0] },
+  { label: 'Other angels',           color: '#5DCAA5', data: [0, 0.85, 1.59, 2.87, 2.65, 2.76, 2.0] },
+  { label: '1Crowd Fund & Angels',   color: '#2a78d6', data: [0, 0, 0, 2.73, 1.66, 2.02, 0] },
+  { label: 'Mumbai Angels (MAVM)',   color: '#85B7EB', data: [0, 0, 0, 1.46, 0.19, 1.02, 0] },
+  { label: 'Desai Brothers',         color: '#FBAE25', data: [0, 0, 0, 0, 1.5, 0, 0] },
+  { label: 'Bikaji FO',              color: '#E35C25', data: [0, 0, 0, 0, 0, 4.0, 2.5] },
+  { label: 'Existing investors',     color: '#9FE1CB', data: [0, 0, 0, 0, 0, 0, 2.4] },
+];
+
+const IH_ROUND_LABELS = ['Pre-seed\n2015','Seed\n2016','Angel 1\n2017','Angel 2\n2018','Angel 3\n2020','Pre-A\n2022','Pre-A\n2023'];
+
+const IH_INVESTORS = [
+  { name: 'Nibhrant Shah & Family',  group: 'Early investors',      round: 'Pre-seed', year: '2015', amount: 4000000,  shares: 3125, pps: 1280 },
+  { name: 'Nibhrant Shah & Family',  group: 'Early investors',      round: 'Seed',     year: '2016', amount: 2000000,  shares: 146,  pps: 13699 },
+  { name: 'Anandbir Singh',          group: 'Early investors',      round: 'Seed',     year: '2016', amount: 316625,   shares: 149,  pps: 2124 },
+  { name: 'Dhimaan Shah',            group: 'Early investors',      round: 'Seed',     year: '2016', amount: 295932,   shares: 39,   pps: 7588 },
+  { name: 'Darshan Shah',            group: 'Early investors',      round: 'Seed',     year: '2016', amount: 1487248,  shares: 196,  pps: 7588 },
+  { name: 'Other early angels',      group: 'Early investors',      round: 'Angel 1',  year: '2017', amount: 15900000, shares: 1109, pps: 14337 },
+  { name: '1Crowd Fund',             group: '1Crowd Fund & Angels', round: 'Angel 2',  year: '2018', amount: 12996162, shares: 1266, pps: 10266 },
+  { name: '1Crowd Angels',           group: '1Crowd Fund & Angels', round: 'Angel 2',  year: '2018', amount: 14316234, shares: 1046, pps: 13686 },
+  { name: 'Akshay Chudasama (MAVM)', group: 'MAVM Angels',          round: 'Angel 2',  year: '2018', amount: 9225786,  shares: 899,  pps: 10262 },
+  { name: 'Other MAVM angels',       group: 'MAVM Angels',          round: 'Angel 2',  year: '2018', amount: 5474214,  shares: 561,  pps: 9758  },
+  { name: 'Other angels',            group: 'Other angels',         round: 'Angel 2',  year: '2018', amount: 28700000, shares: 2184, pps: 13141 },
+  { name: '1Crowd Fund',             group: '1Crowd Fund & Angels', round: 'Angel 3',  year: '2020', amount: 8096652,  shares: 732,  pps: 11060 },
+  { name: '1Crowd Angels',           group: '1Crowd Fund & Angels', round: 'Angel 3',  year: '2020', amount: 8603219,  shares: 634,  pps: 13570 },
+  { name: 'Desai Brothers Ltd',      group: 'Desai Brothers',       round: 'Angel 3',  year: '2020', amount: 14998716, shares: 1356, pps: 11062 },
+  { name: 'JITO Group',              group: 'MAVM Angels',          round: 'Angel 3',  year: '2021', amount: 6070590,  shares: 546,  pps: 11118 },
+  { name: 'Other angels',            group: 'Other angels',         round: 'Angel 3',  year: '2020', amount: 26500000, shares: 2400, pps: 11042 },
+  { name: 'Deepak Agarwal (Bikaji)', group: 'Bikaji FO',            round: 'Pre-A',    year: '2022', amount: 39987675, shares: 2457, pps: 16275 },
+  { name: '1Crowd Fund & Angels',    group: '1Crowd Fund & Angels', round: 'Pre-A',    year: '2022', amount: 20200000, shares: 1242, pps: 16264 },
+  { name: 'MAVM Angels',             group: 'MAVM Angels',          round: 'Pre-A',    year: '2022', amount: 10200000, shares: 627,  pps: 16267 },
+  { name: 'OIP Group',               group: 'Other angels',         round: 'Pre-A',    year: '2022', amount: 9996162,  shares: 974,  pps: 10263 },
+  { name: 'Other angels',            group: 'Other angels',         round: 'Pre-A',    year: '2022', amount: 17600000, shares: 1082, pps: 16267 },
+  { name: 'Deepak Agarwal (Bikaji)', group: 'Bikaji FO',            round: 'Pre-A',    year: '2023', amount: 24998400, shares: 1536, pps: 16275 },
+  { name: 'Existing investors',      group: 'Existing investors',   round: 'Pre-A',    year: '2023', amount: 24000000, shares: 1476, pps: 16260 },
+  { name: 'New investors (FY23)',    group: 'Other angels',         round: 'Pre-A',    year: '2023', amount: 20000000, shares: 1229, pps: 16274 },
+];
