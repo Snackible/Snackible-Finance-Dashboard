@@ -232,24 +232,26 @@
       </div>
     </div>
 
-    <div class="yoy-two-col">
-      <div class="card">
-        <div class="card-header"><div class="card-title">Monthly revenue — FY25 vs FY26</div></div>
-        <div class="yoy-legend">
-          <span><span class="yoy-ldot" style="background:#3ABCA2"></span>FY26</span>
-          <span><span class="yoy-ldot" style="background:#667085"></span>FY25</span>
-        </div>
-        <div class="chart-wrap"><canvas id="yoyRevChart" role="img" aria-label="Grouped bar chart comparing monthly revenue FY25 vs FY26">Monthly revenue comparison across both financial years.</canvas></div>
+    <div class="card" style="margin-bottom:16px;">
+      <div class="card-header"><div class="card-title">Monthly revenue — FY25 vs FY26 vs FY27</div></div>
+      <div style="font-size:11px;color:var(--text-tertiary);margin-bottom:10px;">⚠ FY27 data available for Q1 only (Apr-26, May-26, Jun-26)</div>
+      <div class="yoy-legend">
+        <span><span class="yoy-ldot" style="background:#66708580;border:1px solid #667085"></span>FY25</span>
+        <span><span class="yoy-ldot" style="background:#3ABCA2"></span>FY26</span>
+        <span><span class="yoy-ldot" style="background:#2a78d6"></span>FY27</span>
       </div>
-      <div class="card">
-        <div class="card-header"><div class="card-title">Margin % trends — FY25 vs FY26</div></div>
-        <div class="yoy-legend">
-          <span><span class="yoy-ldot" style="background:#3ABCA2"></span>FY26 GM%</span>
-          <span><span class="yoy-ldot" style="background:#667085"></span>FY25 GM%</span>
-          <span><span class="yoy-ldot" style="background:#FBAE25"></span>FY26 CM1%</span>
-        </div>
-        <div class="chart-wrap"><canvas id="yoyMarginChart" role="img" aria-label="Line chart comparing gross margin and CM1 percentages across FY25 and FY26">Margin percentage trends across both financial years.</canvas></div>
+      <div class="chart-wrap" style="height:260px;"><canvas id="yoyRevChart" role="img" aria-label="Grouped bar chart comparing monthly revenue FY25 FY26 FY27">Monthly revenue three years.</canvas></div>
+      <div style="border-top:1px solid var(--border);margin:20px 0 14px;"></div>
+      <div style="font-size:12px;font-weight:600;color:var(--text-secondary);margin-bottom:10px;">Margin % trends — FY25 vs FY26 vs FY27</div>
+      <div class="yoy-legend">
+        <span><span class="yoy-ldot" style="background:#3ABCA2"></span>FY26 GM%</span>
+        <span><span class="yoy-ldot" style="background:#3ABCA2;opacity:0.5"></span>FY26 CM1% (dashed)</span>
+        <span><span class="yoy-ldot" style="background:#667085"></span>FY25 GM%</span>
+        <span><span class="yoy-ldot" style="background:#667085;opacity:0.5"></span>FY25 CM1% (dashed)</span>
+        <span><span class="yoy-ldot" style="background:#2a78d6"></span>FY27 GM%</span>
+        <span><span class="yoy-ldot" style="background:#2a78d6;opacity:0.5"></span>FY27 CM1% (dashed)</span>
       </div>
+      <div style="position:relative;height:240px;"><canvas id="yoyMarginChart" role="img" aria-label="Line chart comparing GM% and CM1% for FY25 FY26 FY27">Margin percent trends all three years.</canvas></div>
     </div>
 
     <div class="card">
