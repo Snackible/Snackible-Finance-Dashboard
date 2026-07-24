@@ -959,37 +959,45 @@ function initYoY() {
   const tick = '#9AA4B2';
   const grid = 'rgba(255,255,255,0.06)';
 
-  /* Revenue grouped bar */
+  /* Revenue grouped bar — FY25, FY26, FY27 Q1 */
+  const n = null;
+  const rev27 = [22.58,27.97,30.01,n,n,n,n,n,n,n,n,n];
   const revCtx = document.getElementById('yoyRevChart');
   if (revCtx) {
     yoyCharts.rev = new Chart(revCtx, {
       type: 'bar',
       data: { labels: YOY_MONTHS, datasets: [
-        { label:'FY25', data: YOY_DATA.rev25, backgroundColor:'#66708580', borderRadius:3, maxBarThickness:14 },
-        { label:'FY26', data: YOY_DATA.rev26, backgroundColor:'#3ABCA2', borderRadius:3, maxBarThickness:14 }
+        { label:'FY25', data:YOY_DATA.rev25, backgroundColor:'#66708555', borderRadius:3, maxBarThickness:13 },
+        { label:'FY26', data:YOY_DATA.rev26, backgroundColor:'#3ABCA2',   borderRadius:3, maxBarThickness:13 },
+        { label:'FY27', data:rev27,           backgroundColor:'#2a78d6',   borderRadius:3, maxBarThickness:13 },
       ]},
       options: { responsive:true, maintainAspectRatio:false,
-        plugins:{ legend:{display:false}, tooltip:{ callbacks:{ label:c=>`${c.dataset.label}: ₹${c.raw.toFixed(2)}Cr` } } },
+        plugins:{ legend:{display:false}, tooltip:{ callbacks:{ label:c => c.raw !== null ? `${c.dataset.label}: ₹${c.raw.toFixed(2)}Cr` : null, filter: i => i.raw !== null } } },
         scales: {
-          x:{ grid:{display:false}, ticks:{color:tick,font:{size:10}}, stacked:false },
+          x:{ grid:{display:false}, ticks:{color:tick,font:{size:10}} },
           y:{ grid:{color:grid}, ticks:{color:tick,callback:v=>'₹'+v+'Cr'} }
         }
       }
     });
   }
 
-  /* Margin lines */
+  /* Margin lines — FY25, FY26, FY27 Q1 */
+  const gm27   = [50.5,50.2,50.3,n,n,n,n,n,n,n,n,n];
+  const cm1_27 = [39.8,38.8,38.9,n,n,n,n,n,n,n,n,n];
   const mgCtx = document.getElementById('yoyMarginChart');
   if (mgCtx) {
     yoyCharts.margin = new Chart(mgCtx, {
       type: 'line',
       data: { labels: YOY_MONTHS, datasets: [
-        { label:'FY26 GM%', data:YOY_DATA.gm26, borderColor:'#3ABCA2', borderWidth:2, pointRadius:3, pointBackgroundColor:'#3ABCA2', fill:false, tension:0.3 },
-        { label:'FY25 GM%', data:YOY_DATA.gm25, borderColor:'#667085', borderDash:[5,4], borderWidth:2, pointRadius:2, pointBackgroundColor:'#667085', fill:false, tension:0.3 },
-        { label:'FY26 CM1%', data:YOY_DATA.cm126, borderColor:'#FBAE25', borderWidth:2, pointRadius:3, pointBackgroundColor:'#FBAE25', fill:false, tension:0.3 },
+        { label:'FY26 GM%',  data:YOY_DATA.gm26,  borderColor:'#3ABCA2', borderWidth:2, pointRadius:3, pointBackgroundColor:'#3ABCA2', fill:false, tension:0.3 },
+        { label:'FY26 CM1%', data:YOY_DATA.cm126, borderColor:'#3ABCA2', borderDash:[5,4], borderWidth:2, pointRadius:2, pointBackgroundColor:'#3ABCA2', fill:false, tension:0.3 },
+        { label:'FY25 GM%',  data:YOY_DATA.gm25,  borderColor:'#667085', borderWidth:2, pointRadius:3, pointBackgroundColor:'#667085', fill:false, tension:0.3 },
+        { label:'FY25 CM1%', data:YOY_DATA.cm125, borderColor:'#667085', borderDash:[5,4], borderWidth:2, pointRadius:2, pointBackgroundColor:'#667085', fill:false, tension:0.3 },
+        { label:'FY27 GM%',  data:gm27,   borderColor:'#2a78d6', borderWidth:2, pointRadius:4, pointBackgroundColor:'#2a78d6', fill:false, tension:0.3, spanGaps:false },
+        { label:'FY27 CM1%', data:cm1_27, borderColor:'#2a78d6', borderDash:[5,4], borderWidth:2, pointRadius:3, pointBackgroundColor:'#2a78d6', fill:false, tension:0.3, spanGaps:false },
       ]},
       options: { responsive:true, maintainAspectRatio:false,
-        plugins:{ legend:{display:false}, tooltip:{ callbacks:{ label:c=>`${c.dataset.label}: ${c.raw.toFixed(1)}%` } } },
+        plugins:{ legend:{display:false}, tooltip:{ callbacks:{ label:c => c.raw !== null ? `${c.dataset.label}: ${c.raw.toFixed(1)}%` : null, filter: i => i.raw !== null } } },
         scales: {
           x:{ grid:{display:false}, ticks:{color:tick,font:{size:10}} },
           y:{ grid:{color:grid}, ticks:{color:tick,callback:v=>v+'%'}, min:20, max:65 }
