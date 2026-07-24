@@ -56,6 +56,7 @@
     <button class="tab-btn" data-tab="captable">Cap Table</button>
     <button class="tab-btn" data-tab="investorhistory">Investor History</button>
     <button class="tab-btn" data-tab="yoy">YoY Comparison</button>
+    <button class="tab-btn" data-tab="estva">Est vs Actual</button>
   </div>
 
   <div class="month-selector" id="monthSelectorBar">
@@ -296,6 +297,29 @@
     </div>
   </div>
 
+  <div class="panel" id="panel-estva">
+    <style>
+      .eva-kpi-row { display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin-bottom:20px; }
+      .eva-two-col { display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:16px; }
+    </style>
+    <div class="ih-pill-group" id="evaPills" style="margin-bottom:16px;"></div>
+    <div class="eva-kpi-row" id="evaKpis"></div>
+    <div class="card" style="margin-bottom:16px;">
+      <div class="card-header"><div class="card-title">P&L — Estimates vs Actuals</div></div>
+      <div id="evaTable"></div>
+    </div>
+    <div class="eva-two-col">
+      <div class="card">
+        <div class="card-header"><div class="card-title">Revenue variance by channel</div></div>
+        <div class="chart-wrap"><canvas id="evaVarChart" role="img" aria-label="Horizontal bar chart showing revenue variance vs estimate by channel">Channel revenue variance.</canvas></div>
+      </div>
+      <div class="card">
+        <div class="card-header"><div class="card-title">EBITDA — Est vs Actual</div></div>
+        <div class="chart-wrap"><canvas id="evaEbChart" role="img" aria-label="Line chart comparing EBITDA estimate vs actual by month">EBITDA estimate vs actual.</canvas></div>
+      </div>
+    </div>
+    <div id="evaContent"></div>
+  </div>
   <div class="panel" id="panel-captable">
     <div class="card">
       <div class="card-header">
