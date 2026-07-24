@@ -917,7 +917,7 @@ function renderIHDrill() {
     tr.innerHTML = '<td>' + inv.name + '</td>'
       + '<td style="color:var(--text-secondary)">' + inv.group + '</td>'
       + '<td style="color:var(--text-secondary)">' + inv.round + '</td>'
-      + '<td style="text-align:right;color:var(--text-secondary)">' + inv.year + '</td>'
+      + '<td style="text-align:right;color:var(--text-secondary)">' + inv.date + '</td>'
       + '<td style="text-align:right">' + ihFmt(inv.amount) + '</td>'
       + '<td style="text-align:right">' + inv.shares.toLocaleString('en-IN') + '</td>'
       + '<td style="text-align:right">₹' + inv.pps.toLocaleString('en-IN') + '</td>';
