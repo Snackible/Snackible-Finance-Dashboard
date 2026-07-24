@@ -10,6 +10,25 @@
 <link rel="stylesheet" href="styles.css">
 </head>
 <body>
+<div id="loadingScreen" style="
+  position:fixed; inset:0; background:var(--bg-0);
+  display:flex; align-items:center; justify-content:center;
+  z-index:9999; flex-direction:column; gap:16px;">
+  <div style="font-family:'Poppins',sans-serif;font-size:18px;font-weight:700;color:var(--text-primary);">Snackible MIS</div>
+  <div style="width:200px;height:3px;background:var(--bg-3);border-radius:99px;overflow:hidden;">
+    <div style="height:100%;background:var(--accent);border-radius:99px;animation:loadbar 1.4s ease-in-out infinite;"></div>
+  </div>
+  <div style="font-size:12px;color:var(--text-tertiary);">Loading data from Google Sheets...</div>
+</div>
+
+<style>
+@keyframes loadbar {
+  0%   { width:0%;   margin-left:0; }
+  50%  { width:60%;  margin-left:20%; }
+  100% { width:0%;   margin-left:100%; }
+}
+</style>
+
 <div class="shell">
   <header class="top">
     <div class="brand">
