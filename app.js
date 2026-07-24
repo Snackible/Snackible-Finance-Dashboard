@@ -691,7 +691,8 @@ function initTabs() {
       if (btn.dataset.tab === 'captable') setTimeout(renderCapTable, 10);
       if (btn.dataset.tab === 'investorhistory') setTimeout(initInvestorHistory, 10);
       if (btn.dataset.tab === 'yoy') setTimeout(initYoY, 10);
-      const hideSelectorTabs = ['captable','investorhistory'];
+      if (btn.dataset.tab === 'estva') setTimeout(initEstVsAct, 10);
+      const hideSelectorTabs = ['captable','investorhistory','estva'];
       document.getElementById('monthSelectorBar').style.display = hideSelectorTabs.includes(btn.dataset.tab) ? 'none' : '';
     });
   });
@@ -1149,3 +1150,212 @@ function initYoY() {
 document.querySelector('[data-tab="yoy"]').addEventListener('click', () => {
   setTimeout(initYoY, 10);
 });
+
+/* ---- Estimates vs Actuals ---- */
+let evaChartVar = null;
+let evaChartEb  = null;
+let evaMonth    = 'all';
+
+const EVA_METRICS = [
+  { label:'Total Net Revenue',      section:'Revenue' },
+  { label:'Snackible-Own website',  section:'Revenue' },
+  { label:'Online Alternate Channels', section:'Revenue' },
+  { label:'B2B/Institutional sales channel', section:'Revenue' },
+  { label:'General Trade',          section:'Revenue' },
+  { label:'Modern Trade',           section:'Revenue' },
+  { label:'Gross margin',           section:'Margins' },
+  { label:'Total CM1',              section:'Margins' },
+  { label:'Total CM2',              section:'Margins' },
+  { label:'Total Marketing Expenses', section:'Costs' },
+  { label:'Total Labour Expense',   section:'Costs' },
+  { label:'Total Delivery Expense', section:'Costs' },
+  { label:'Total Indirect Expenses',section:'Costs' },
+  { label:'EBITDA',                 section:'Bottom line' },
+];
+
+const CHANNEL_LABELS = [
+  'Snackible-Own website','Online Alternate Channels',
+  'B2B/Institutional sales channel','General Trade','Modern Trade'
+];
+
+function getEVAData() {
+  const fy27 = ALL_FY_DATA['FY27'];
+  if (!fy27 || !fy27.hasEstimates) return null;
+  return fy27;
+}
+
+function evaSum(row, months, field) {
+  const src = field === 'estimates' ? row.estimates : row.values;
+  if (!src) return null;
+  let sum = 0, has = false;
+  months.forEach(m => {
+    const v = src[m];
+    if (typeof v === 'number' && v !== null) { sum += v; has = true; }
+  });
+  return has ? sum : null;
+}
+
+function evaFindRow(fy27, label) {
+  return (fy27.rows || []).find(r => r.label === label);
+}
+
+function initEstVsAct() {
+  const fy27 = getEVAData();
+  if (!fy27) {
+    document.getElementById('evaContent').innerHTML =
+      '<div class="empty-state" style="padding:60px;text-align:center;color:var(--text-tertiary);">FY27 data not loaded. Switch to FY27 first.</div>';
+    return;
+  }
+
+  // Build month pills
+  const pillWrap = document.getElementById('evaPills');
+  pillWrap.innerHTML = '';
+  const pillDefs = [{ key:'all', label:'All Q1' }, ...fy27.months.filter(m => fy27.rows.some(r => r.values && r.values[m])).slice(0,3).map(m => ({ key:m, label:m }))];
+  pillDefs.forEach(p => {
+    const btn = document.createElement('button');
+    btn.className = 'ih-pill' + (p.key === evaMonth ? ' active' : '');
+    btn.textContent = p.label;
+    btn.onclick = () => {
+      evaMonth = p.key;
+      document.querySelectorAll('#evaPills .ih-pill').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      renderEVA();
+    };
+    pillWrap.appendChild(btn);
+  });
+
+  renderEVA();
+}
+
+function renderEVA() {
+  const fy27 = getEVAData();
+  if (!fy27) return;
+
+  const activeMths = evaMonth === 'all'
+    ? fy27.months.filter(m => fy27.rows.some(r => r.values && r.values[m]))
+    : [evaMonth];
+
+  /* ---- Summary KPIs ---- */
+  const revRow  = evaFindRow(fy27, 'Total Net Revenue');
+  const ebRow   = evaFindRow(fy27, 'EBITDA');
+  const gmRow   = evaFindRow(fy27, 'Gross margin');
+  const cogsRow = evaFindRow(fy27, 'Total cost of goods');
+
+  function kpiHtml(label, row, isMargin) {
+    if (!row) return '<div class="kpi-card"><div class="kpi-label">'+label+'</div><div class="kpi-value">—</div></div>';
+    const e = evaSum(row, activeMths, 'estimates');
+    const a = evaSum(row, activeMths, 'actuals');
+    let var_pct = (e && a && e !== 0) ? ((a - e) / Math.abs(e) * 100) : null;
+    // For margin: compute as % of revenue
+    let displayE = fmtCurrency(e), displayA = fmtCurrency(a), displayVar = '';
+    if (isMargin && revRow) {
+      const re = evaSum(revRow, activeMths, 'estimates');
+      const ra = evaSum(revRow, activeMths, 'actuals');
+      const pctE = (e && re) ? (e/re*100) : null;
+      const pctA = (a && ra) ? (a/ra*100) : null;
+      displayE = pctE ? pctE.toFixed(1)+'%' : '—';
+      displayA = pctA ? pctA.toFixed(1)+'%' : '—';
+      var_pct = (pctE && pctA) ? (pctA - pctE) : null;
+      displayVar = var_pct !== null ? (var_pct >= 0 ? '+' : '') + var_pct.toFixed(1) + 'pp' : '—';
+    } else {
+      displayVar = var_pct !== null ? (var_pct >= 0 ? '+' : '') + var_pct.toFixed(1) + '%' : '—';
+    }
+    const col = var_pct === null ? '' : (var_pct >= 0 ? 'color:var(--green)' : 'color:var(--red)');
+    return '<div class="kpi-card">'
+      + '<div class="kpi-label">'+label+'</div>'
+      + '<div class="kpi-value" style="'+col+'">'+displayVar+'</div>'
+      + '<div style="font-size:11px;color:var(--text-tertiary);margin-top:4px;">'+displayA+' actual vs '+displayE+' est</div>'
+      + '</div>';
+  }
+
+  document.getElementById('evaKpis').innerHTML =
+    kpiHtml('Revenue vs plan', revRow, false) +
+    kpiHtml('EBITDA vs plan', ebRow, false) +
+    kpiHtml('GM% vs plan', gmRow, true);
+
+  /* ---- Main table ---- */
+  let html = '<div style="overflow-x:auto;"><table>'
+    + '<thead><tr>'
+    + '<th style="text-align:left;width:30%">Metric</th>'
+    + '<th>Estimate</th><th>Actual</th><th>Variance</th><th>Var %</th><th>Status</th>'
+    + '</tr></thead><tbody>';
+
+  let currentSection = '';
+  EVA_METRICS.forEach(m => {
+    const row = evaFindRow(fy27, m.label);
+    if (!row) return;
+    if (m.section !== currentSection) {
+      currentSection = m.section;
+      html += '<tr style="background:var(--bg-2);"><td colspan="6" style="padding:5px 10px;font-size:10px;color:var(--text-tertiary);text-transform:uppercase;letter-spacing:.05em;">'+m.section+'</td></tr>';
+    }
+    const e = evaSum(row, activeMths, 'estimates');
+    const a = evaSum(row, activeMths, 'actuals');
+    if (e === null && a === null) return;
+    const diff = (e !== null && a !== null) ? (a - e) : null;
+    const pct  = (diff !== null && e !== 0) ? (diff / Math.abs(e) * 100) : null;
+    const isPos = pct !== null && pct >= 0;
+    // For costs: over budget = bad (red), under = good (green)
+    const isCost = ['Costs'].includes(m.section);
+    const beat = isCost ? !isPos : isPos;
+    const col  = pct === null ? '' : (beat ? 'color:var(--green)' : 'color:var(--red)');
+    const pill = pct === null ? '—'
+      : beat ? '<span style="font-size:10px;padding:2px 7px;border-radius:999px;background:rgba(58,188,162,0.15);color:var(--green);font-weight:600;">'+(isCost?'Under':'Beat')+'</span>'
+              : '<span style="font-size:10px;padding:2px 7px;border-radius:999px;background:rgba(227,92,37,0.15);color:var(--red);font-weight:600;">'+(isCost?'Over':'Missed')+'</span>';
+    const shortLabel = m.label.replace('Snackible-','').replace(' sales channel','').replace(' Channels','').replace('Total ','');
+    html += '<tr>'
+      + '<td>'+shortLabel+'</td>'
+      + '<td style="text-align:right">'+( e !== null ? fmtFull(e) : '—')+'</td>'
+      + '<td style="text-align:right">'+( a !== null ? fmtFull(a) : '—')+'</td>'
+      + '<td style="text-align:right;'+col+'">'+( diff !== null ? (diff >= 0 ? '+' : '') + fmtFull(diff) : '—')+'</td>'
+      + '<td style="text-align:right;'+col+'">'+( pct !== null ? (pct >= 0 ? '+' : '') + pct.toFixed(1)+'%' : '—')+'</td>'
+      + '<td style="text-align:right">'+pill+'</td>'
+      + '</tr>';
+  });
+  html += '</tbody></table></div>';
+  document.getElementById('evaTable').innerHTML = html;
+
+  /* ---- Channel variance bar chart ---- */
+  const ctx1 = document.getElementById('evaVarChart');
+  if (ctx1) {
+    if (evaChartVar) evaChartVar.destroy();
+    const chLabels = CHANNEL_LABELS.map(l => l.replace('Snackible-','').replace(' sales channel','').replace(' Channels',''));
+    const chData = CHANNEL_LABELS.map(lbl => {
+      const r = evaFindRow(fy27, lbl);
+      if (!r) return null;
+      const e = evaSum(r, activeMths, 'estimates');
+      const a = evaSum(r, activeMths, 'actuals');
+      return (e && a) ? (a - e) / 100000 : null;
+    });
+    evaChartVar = new Chart(ctx1, {
+      type: 'bar', indexAxis: 'y',
+      data: { labels: chLabels, datasets: [{ data: chData,
+        backgroundColor: chData.map(v => (v !== null && v >= 0) ? '#3ABCA2' : '#E35C25'),
+        borderRadius: 4, maxBarThickness: 22 }] },
+      options: { responsive:true, maintainAspectRatio:false, plugins:{ legend:{display:false}, dataLabelPlugin:false,
+        tooltip:{ callbacks:{ label:c => c.raw !== null ? (c.raw >= 0 ? '+' : '') + fmtCurrency(c.raw*100000) + ' vs est' : '—' } } },
+        scales:{ x:{ grid:{color:'rgba(255,255,255,0.06)'}, ticks:{color:'#9AA4B2',callback:v=>fmtCurrency(v*100000)} }, y:{ grid:{display:false}, ticks:{color:'#9AA4B2',font:{size:11}} } } }
+    });
+  }
+
+  /* ---- EBITDA Est vs Actual line chart ---- */
+  const ctx2 = document.getElementById('evaEbChart');
+  if (ctx2) {
+    if (evaChartEb) evaChartEb.destroy();
+    const ebMonths = fy27.months.filter(m => fy27.rows.some(r => r.values && r.values[m]));
+    const ebRow2 = evaFindRow(fy27, 'EBITDA');
+    const estData = ebRow2 ? ebMonths.map(m => ebRow2.estimates && ebRow2.estimates[m] != null ? ebRow2.estimates[m]/100000 : null) : [];
+    const actData = ebRow2 ? ebMonths.map(m => ebRow2.values && ebRow2.values[m] != null ? ebRow2.values[m]/100000 : null) : [];
+    evaChartEb = new Chart(ctx2, {
+      type: 'line',
+      data: { labels: ebMonths, datasets: [
+        { label:'Estimate', data:estData, borderColor:'#667085', borderDash:[5,4], borderWidth:2, pointRadius:4, pointBackgroundColor:'#667085', fill:false, tension:0.3 },
+        { label:'Actual',   data:actData, borderColor:'#3ABCA2', borderWidth:2, pointRadius:4,
+          pointBackgroundColor: actData.map((v,i) => v !== null && estData[i] !== null && v >= estData[i] ? '#3ABCA2' : '#E35C25'),
+          fill:false, tension:0.3 },
+      ]},
+      options: { responsive:true, maintainAspectRatio:false, plugins:{ legend:{display:false}, dataLabelPlugin:false,
+        tooltip:{ callbacks:{ label:c => c.dataset.label+': ₹'+c.raw.toFixed(1)+'L' } } },
+        scales:{ x:{ grid:{display:false}, ticks:{color:'#9AA4B2'} }, y:{ grid:{color:'rgba(255,255,255,0.06)'}, ticks:{color:'#9AA4B2',callback:v=>v+'L'} } } }
+    });
+  }
+}
