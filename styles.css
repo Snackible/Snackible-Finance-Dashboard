@@ -1,4 +1,4 @@
-  :root {
+:root {
     --bg-0: #0B0F14;
     --bg-1: #111722;
     --bg-2: #171E2B;
@@ -281,3 +281,64 @@
       .yoy-ldot { width:9px; height:9px; border-radius:2px; display:inline-block; margin-right:4px; flex-shrink:0; }
       .yoy-sub { font-size:11px; color:var(--text-tertiary); margin-top:2px; }
       .yoy-sep { font-size:11px; font-weight:600; color:var(--text-tertiary); text-transform:uppercase; letter-spacing:.04em; margin:10px 0 8px; }
+/* ---- Main tabs (Snackible MIS / Investor Data) ---- */
+.main-tabs {
+  display: flex;
+  gap: 2px;
+  padding: 0 0 0 2px;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 24px;
+}
+.main-tab {
+  background: transparent;
+  border: none;
+  color: var(--text-tertiary);
+  font-size: 13px;
+  font-weight: 600;
+  padding: 12px 20px;
+  cursor: pointer;
+  font-family: inherit;
+  border-bottom: 2px solid transparent;
+  transition: all 120ms ease;
+  white-space: nowrap;
+}
+.main-tab.active { color: var(--text-primary); border-bottom-color: var(--accent); }
+.main-tab:hover:not(.active) { color: var(--text-secondary); }
+
+.main-panel { display: none; }
+.main-panel.active { display: block; }
+
+/* ---- Sub-tabs ---- */
+.sub-tabs {
+  display: flex;
+  gap: 3px;
+  background: var(--bg-1);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 3px;
+  width: fit-content;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+.sub-tab {
+  background: transparent;
+  border: none;
+  color: var(--text-secondary);
+  font-size: 12px;
+  font-weight: 600;
+  padding: 7px 14px;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: all 150ms ease;
+  white-space: nowrap;
+  font-family: inherit;
+}
+.sub-tab.active { background: var(--bg-3); color: var(--text-primary); }
+.sub-tab:hover:not(.active) { color: var(--text-primary); }
+
+.sub-panel { display: none; }
+.sub-panel.active { display: block; }
+
+/* ---- EVA styles ---- */
+.eva-kpi-row { display: grid; grid-template-columns: repeat(3,1fr); gap: 12px; margin-bottom: 20px; }
+.eva-two-col  { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
