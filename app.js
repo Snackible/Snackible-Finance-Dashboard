@@ -138,8 +138,6 @@ function initFYSwitcher() {
   });
 }
 
-const FY27_APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbysu-p9q8isl7jszRgTrX7_DEbJskwO87nFhRugZLrGLBiJ_X7EaA9pTM49zpj9UwETOg/exec';
-
 function loadFY27() {
   /* Show loading state */
   document.getElementById('kpiGrid').innerHTML = '<div style="grid-column:1/-1;padding:40px;text-align:center;color:var(--text-tertiary);font-size:13px;">Loading FY27 data...</div>';
@@ -150,13 +148,14 @@ function loadFY27() {
   const stub = document.getElementById('fy27Stub');
   if (stub) stub.style.display = 'none';
 
-  fetch(FY27_APPS_SCRIPT_URL)
+  fetch(MIS_API_URL + '?fy=FY27')
     .then(res => {
       if (!res.ok) throw new Error('HTTP ' + res.status);
       return res.json();
     })
     .then(data => {
       if (data.error) throw new Error(data.error);
+      if (!data.months || !data.rows) throw new Error('Invalid FY27 data shape');
 
       /* Inject into ALL_FY_DATA and load like any other FY */
       ALL_FY_DATA['FY27'] = data;
