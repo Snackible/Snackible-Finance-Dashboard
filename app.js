@@ -687,9 +687,12 @@ function initTabs() {
       const panel = document.getElementById('panel-'+btn.dataset.tab);
       if (panel) panel.classList.add('active');
       // FIX BUG 4 (trend): re-render trend when tab becomes visible
-      if (btn.dataset.tab === 'trend') {
-        setTimeout(renderTrendChart, 10);
-      }
+      if (btn.dataset.tab === 'trend') setTimeout(renderTrendChart, 10);
+      if (btn.dataset.tab === 'captable') setTimeout(renderCapTable, 10);
+      if (btn.dataset.tab === 'investorhistory') setTimeout(initInvestorHistory, 10);
+      if (btn.dataset.tab === 'yoy') setTimeout(initYoY, 10);
+      const hideSelectorTabs = ['captable','investorhistory'];
+      document.getElementById('monthSelectorBar').style.display = hideSelectorTabs.includes(btn.dataset.tab) ? 'none' : '';
     });
   });
 }
