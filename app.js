@@ -972,11 +972,13 @@ function initYoY() {
         { label:'FY27', data:rev27,           backgroundColor:'#2a78d6',   borderRadius:3, maxBarThickness:13 },
       ]},
       options: { responsive:true, maintainAspectRatio:false,
-        layout:{ padding:{ left:12, top:16, right:16 } },
-        plugins:{ legend:{display:false}, tooltip:{ callbacks:{ label:c => c.raw !== null ? `${c.dataset.label}: ${c.raw.toFixed(1)}%` : null, filter: i => i.raw !== null } }, dataLabelPlugin:false },
-        scales: {
+        layout:{ padding:{ top:4 } },
+        plugins:{ legend:{display:false}, dataLabelPlugin:false,
+          tooltip:{ callbacks:{ label:c => c.raw !== null ? `${c.dataset.label}: ₹${c.raw.toFixed(2)}Cr` : null, filter: i => i.raw !== null } }
+        },
+        scales:{
           x:{ grid:{display:false}, ticks:{color:tick,font:{size:10}} },
-          y:{ grid:{color:grid}, ticks:{color:tick,callback:v=>v+'%'}, min:20, max:65 }
+          y:{ grid:{color:grid}, ticks:{color:tick,callback:v=>'₹'+v+'Cr'}, beginAtZero:true }
         }
       }
     });
@@ -998,15 +1000,17 @@ function initYoY() {
         { label:'FY27 CM1%', data:cm1_27, borderColor:'#2a78d6', borderDash:[5,4], borderWidth:2, pointRadius:3, pointBackgroundColor:'#2a78d6', fill:false, tension:0.3, spanGaps:false },
       ]},
       options: { responsive:true, maintainAspectRatio:false,
-        plugins:{ legend:{display:false}, tooltip:{ callbacks:{ label:c => c.raw !== null ? `${c.dataset.label}: ${c.raw.toFixed(1)}%` : null, filter: i => i.raw !== null } } },
-        scales: {
+        layout:{ padding:{ left:8, top:8, right:8 } },
+        plugins:{ legend:{display:false}, dataLabelPlugin:false,
+          tooltip:{ callbacks:{ label:c => c.raw !== null ? `${c.dataset.label}: ${c.raw.toFixed(1)}%` : null, filter: i => i.raw !== null } }
+        },
+        scales:{
           x:{ grid:{display:false}, ticks:{color:tick,font:{size:10}} },
           y:{ grid:{color:grid}, ticks:{color:tick,callback:v=>v+'%'}, min:20, max:65 }
         }
       }
     });
   }
-
   /* EBITDA Option A — two separate line charts, same scale */
   const ebMin = -60, ebMax = 30;
   const ebLineOpts = (color) => ({
