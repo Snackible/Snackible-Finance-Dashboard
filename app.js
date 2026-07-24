@@ -972,10 +972,11 @@ function initYoY() {
         { label:'FY27', data:rev27,           backgroundColor:'#2a78d6',   borderRadius:3, maxBarThickness:13 },
       ]},
       options: { responsive:true, maintainAspectRatio:false,
-        plugins:{ legend:{display:false}, tooltip:{ callbacks:{ label:c => c.raw !== null ? `${c.dataset.label}: ₹${c.raw.toFixed(2)}Cr` : null, filter: i => i.raw !== null } } },
+        layout:{ padding:{ left:12, top:16, right:16 } },
+        plugins:{ legend:{display:false}, tooltip:{ callbacks:{ label:c => c.raw !== null ? `${c.dataset.label}: ${c.raw.toFixed(1)}%` : null, filter: i => i.raw !== null } }, dataLabelPlugin:false },
         scales: {
           x:{ grid:{display:false}, ticks:{color:tick,font:{size:10}} },
-          y:{ grid:{color:grid}, ticks:{color:tick,callback:v=>'₹'+v+'Cr'} }
+          y:{ grid:{color:grid}, ticks:{color:tick,callback:v=>v+'%'}, min:20, max:65 }
         }
       }
     });
