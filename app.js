@@ -334,12 +334,17 @@ function sumAcrossMonths(row, months) {
 const dataLabelPlugin = {
   id: 'dataLabelPlugin',
   afterDatasetsDraw(chart, args, opts) {
+    // Disabled on this chart instance
+    if (opts === false) return;
     const { ctx } = chart;
     chart.data.datasets.forEach((dataset) => {
       const meta = chart.getDatasetMeta(chart.data.datasets.indexOf(dataset));
       meta.data.forEach((bar, index) => {
         const value = dataset.data[index];
         if (value === null || value === undefined) return;
+        // Skip label if bar is too small to display text cleanly (< 24px height)
+        const barHeight = Math.abs(bar.base - bar.y);
+        if (barHeight < 24) return;
         const label = opts.formatter ? opts.formatter(value) : value;
         ctx.save();
         ctx.fillStyle = '#F2F4F7';
@@ -866,7 +871,8 @@ function initInvestorHistory() {
       responsive: true, maintainAspectRatio: false,
       plugins: {
         legend: { display: false },
-        tooltip: { callbacks: { label: c => c.raw > 0 ? c.dataset.label + ': ₹' + c.raw + ' Cr' : null, filter: i => i.raw > 0 } }
+        tooltip: { callbacks: { label: c => c.raw > 0 ? c.dataset.label + ': ₹' + c.raw + ' Cr' : null, filter: i => i.raw > 0 } },
+        dataLabelPlugin: false
       },
       scales: {
         x: { stacked: true, grid: { display: false }, ticks: { color: '#9AA4B2', font: { size: 10 }, maxRotation: 0 } },
